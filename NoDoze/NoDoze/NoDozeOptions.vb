@@ -299,4 +299,8 @@
             Me.ShowInTaskbar = True
         End If
     End Sub
+
+    Private Sub HomepageLink_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles HomepageLink.LinkClicked
+        Process.Start("http://code.google.com/p/no-doze/")
+    End Sub
 End Class

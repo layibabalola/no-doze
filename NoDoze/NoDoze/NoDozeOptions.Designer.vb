@@ -36,6 +36,7 @@ Partial Class NoDozeOptions
         Me.ActiveTimer = New System.Windows.Forms.Timer(Me.components)
         Me.btnQuit = New System.Windows.Forms.Button()
         Me.NoDozeToolTip = New System.Windows.Forms.ToolTip(Me.components)
+        Me.HomepageLink = New System.Windows.Forms.LinkLabel()
         Me.SuspendLayout()
         '
         'txtSearchExpr
@@ -72,9 +73,9 @@ Partial Class NoDozeOptions
         Me.lstSearchExpr.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.lstSearchExpr.FormattingEnabled = True
-        Me.lstSearchExpr.Location = New System.Drawing.Point(15, 40)
+        Me.lstSearchExpr.Location = New System.Drawing.Point(12, 40)
         Me.lstSearchExpr.Name = "lstSearchExpr"
-        Me.lstSearchExpr.Size = New System.Drawing.Size(492, 108)
+        Me.lstSearchExpr.Size = New System.Drawing.Size(495, 108)
         Me.lstSearchExpr.TabIndex = 3
         '
         'btnRemove
@@ -134,11 +135,22 @@ Partial Class NoDozeOptions
         Me.btnQuit.Text = "Quit"
         Me.btnQuit.UseVisualStyleBackColor = True
         '
+        'HomepageLink
+        '
+        Me.HomepageLink.AutoSize = True
+        Me.HomepageLink.Location = New System.Drawing.Point(9, 355)
+        Me.HomepageLink.Name = "HomepageLink"
+        Me.HomepageLink.Size = New System.Drawing.Size(59, 13)
+        Me.HomepageLink.TabIndex = 9
+        Me.HomepageLink.TabStop = True
+        Me.HomepageLink.Text = "Homepage"
+        '
         'NoDozeOptions
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(591, 385)
+        Me.Controls.Add(Me.HomepageLink)
         Me.Controls.Add(Me.btnQuit)
         Me.Controls.Add(Me.lstProcesses)
         Me.Controls.Add(Me.Label1)
@@ -166,5 +178,6 @@ Partial Class NoDozeOptions
     Friend WithEvents ActiveTimer As System.Windows.Forms.Timer
     Friend WithEvents btnQuit As System.Windows.Forms.Button
     Friend WithEvents NoDozeToolTip As System.Windows.Forms.ToolTip
+    Friend WithEvents HomepageLink As System.Windows.Forms.LinkLabel
 
 End Class
