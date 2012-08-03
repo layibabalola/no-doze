@@ -26,12 +26,15 @@
 
         dirkey = My.Computer.Registry.CurrentUser.CreateSubKey(NODOZE_KEY)
         dirkey.DeleteValue(pattern, False)
+        Dim ValueCount As Integer = dirkey.GetValueNames.Length
         dirkey.Close()
+        If ValueCount = 0 Then
+            My.Computer.Registry.CurrentUser.DeleteSubKey(NODOZE_KEY)
+        End If
     End Sub
-
 #End Region
 
-    Private Function TextMatch(input As String, pattern As String) As Boolean
+    Private Function TextMatchEx(input As String, pattern As String) As Boolean
         If (pattern.Length > 0 AndAlso
                 ((pattern.Length > 2 AndAlso pattern.StartsWith("/") AndAlso pattern.EndsWith("/") AndAlso
                   System.Text.RegularExpressions.Regex.Match(input, pattern.Substring(1, pattern.Length - 2)).Success) OrElse
@@ -40,6 +43,21 @@
         Else
             Return False
         End If
+    End Function
+
+    Private Function TextMatch(input As String, pattern As String) As Boolean
+        Try
+            If (pattern.Length > 0 AndAlso
+                ((pattern.Length > 2 AndAlso pattern.StartsWith("/") AndAlso pattern.EndsWith("/") AndAlso
+                  System.Text.RegularExpressions.Regex.Match(input, pattern.Substring(1, pattern.Length - 2)).Success) OrElse
+                (input Like pattern))) Then
+                Return True
+            Else
+                Return False
+            End If
+        Catch ex As Exception
+            Return False
+        End Try
     End Function
 
     Private Sub ProcessesTimer_Tick(sender As Object, e As EventArgs) Handles ProcessesTimer.Tick
@@ -71,10 +89,12 @@
             Else
                 lvi.ForeColor = Color.Black
             End If
-            If TextMatch(lvi.Text, txtSearchExpr.Text) Then
-                lvi.BackColor = Color.LightYellow
-            Else
-                lvi.BackColor = Color.White
+            If Not InvalidSearchExpr Then
+                If TextMatch(lvi.Text, txtSearchExpr.Text) Then
+                    lvi.BackColor = Color.LightYellow
+                Else
+                    lvi.BackColor = Color.White
+                End If
             End If
         Next
         UpdateIcon(FoundMatch, MatchName)
@@ -83,13 +103,23 @@
         End If
     End Sub
 
+    Dim InvalidSearchExpr As Boolean
     Private Sub txtSearchExpr_TextChanged(sender As Object, e As EventArgs) Handles txtSearchExpr.TextChanged
         For Each lvi As ListViewItem In lstProcesses.Items
-            If TextMatch(lvi.Text, txtSearchExpr.Text) Then
-                lvi.BackColor = Color.LightYellow
-            Else
+            Try
+                If TextMatchEx(lvi.Text, txtSearchExpr.Text) Then
+                    lvi.BackColor = Color.LightYellow
+                Else
+                    lvi.BackColor = Color.White
+                End If
+                txtSearchExpr.ForeColor = Color.Black
+                InvalidSearchExpr = False
+            Catch ex As Exception
                 lvi.BackColor = Color.White
-            End If
+                txtSearchExpr.ForeColor = Color.Red
+                InvalidSearchExpr = True
+                Exit For
+            End Try
         Next
     End Sub
 
@@ -226,7 +256,6 @@
     End Sub
 
     Private Sub NotifyIcon1_MouseDoubleClick(sender As Object, e As MouseEventArgs) Handles NotifyIcon1.MouseDoubleClick
-        Me.ShowInTaskbar = True
         Me.WindowState = FormWindowState.Normal
         ProcessesTimer.Start()
     End Sub
@@ -249,7 +278,7 @@
             NotifyIcon1.Text = Me.Text + " - Awake for: " + reason
         Else
             NotifyIcon1.Icon = My.Resources.coffee_empty
-            NotifyIcon1.Text = Me.Text + " - Disabled"
+            NotifyIcon1.Text = Me.Text + " - Sleep allowed"
         End If
     End Sub
 #End Region
