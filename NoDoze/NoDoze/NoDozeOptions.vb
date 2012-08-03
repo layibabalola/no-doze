@@ -213,10 +213,12 @@
             e.Cancel = True
             Me.WindowState = FormWindowState.Minimized
             NotifyIcon1.Visible = True
+            Me.ShowInTaskbar = False
         End If
     End Sub
 
     Private Sub NotifyIcon1_MouseDoubleClick(sender As Object, e As MouseEventArgs) Handles NotifyIcon1.MouseDoubleClick
+        Me.ShowInTaskbar = True
         Me.WindowState = FormWindowState.Normal
         NotifyIcon1.Visible = False
         ProcessesTimer.Start()
