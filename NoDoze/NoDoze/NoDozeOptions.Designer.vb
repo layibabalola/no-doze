@@ -35,6 +35,7 @@ Partial Class NoDozeOptions
         Me.NotifyIcon1 = New System.Windows.Forms.NotifyIcon(Me.components)
         Me.ActiveTimer = New System.Windows.Forms.Timer(Me.components)
         Me.btnQuit = New System.Windows.Forms.Button()
+        Me.NoDozeToolTip = New System.Windows.Forms.ToolTip(Me.components)
         Me.SuspendLayout()
         '
         'txtSearchExpr
@@ -45,6 +46,7 @@ Partial Class NoDozeOptions
         Me.txtSearchExpr.Name = "txtSearchExpr"
         Me.txtSearchExpr.Size = New System.Drawing.Size(391, 20)
         Me.txtSearchExpr.TabIndex = 0
+        Me.NoDozeToolTip.SetToolTip(Me.txtSearchExpr, "Use Windows wildcards (*?#) or /RegExp/")
         '
         'lblSearchExpr
         '
@@ -107,6 +109,7 @@ Partial Class NoDozeOptions
         Me.lstProcesses.Name = "lstProcesses"
         Me.lstProcesses.Size = New System.Drawing.Size(567, 170)
         Me.lstProcesses.TabIndex = 7
+        Me.NoDozeToolTip.SetToolTip(Me.lstProcesses, "Double-click to copy to Search Expression")
         Me.lstProcesses.UseCompatibleStateImageBehavior = False
         Me.lstProcesses.View = System.Windows.Forms.View.List
         '
@@ -162,5 +165,6 @@ Partial Class NoDozeOptions
     Friend WithEvents NotifyIcon1 As System.Windows.Forms.NotifyIcon
     Friend WithEvents ActiveTimer As System.Windows.Forms.Timer
     Friend WithEvents btnQuit As System.Windows.Forms.Button
+    Friend WithEvents NoDozeToolTip As System.Windows.Forms.ToolTip
 
 End Class

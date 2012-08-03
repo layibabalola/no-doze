@@ -62,10 +62,12 @@
             End If
         Next
         Dim FoundMatch As Boolean = False
+        Dim MatchName As String = ""
         For Each lvi As ListViewItem In lstProcesses.Items 'now update all the colors
             If lstSearchExpr.Items.Cast(Of String)().Any(Function(s As String) TextMatch(lvi.Text, s)) Then
                 lvi.ForeColor = Color.Green
                 FoundMatch = True
+                MatchName = lvi.Text
             Else
                 lvi.ForeColor = Color.Black
             End If
@@ -75,7 +77,7 @@
                 lvi.BackColor = Color.White
             End If
         Next
-        UpdateIcon(FoundMatch)
+        UpdateIcon(FoundMatch, MatchName)
         If Me.WindowState = FormWindowState.Minimized Then
             ProcessesTimer.Stop()
         End If
@@ -95,13 +97,14 @@
         lstSearchExpr.Items.Add(txtSearchExpr.Text)
         SaveToConfig(txtSearchExpr.Text)
         txtSearchExpr.Text = ""
+        ProcessesTimer_Tick(Me, Nothing)
     End Sub
 
     Private Sub btnRemove_Click(sender As Object, e As EventArgs) Handles btnRemove.Click
         If lstSearchExpr.SelectedIndex >= 0 And lstSearchExpr.SelectedIndex < lstSearchExpr.Items.Count Then
             RemoveFromConfig(lstSearchExpr.SelectedItem.ToString)
             lstSearchExpr.Items.RemoveAt(lstSearchExpr.SelectedIndex)
-
+            ProcessesTimer_Tick(Me, Nothing)
         End If
     End Sub
 
@@ -118,6 +121,13 @@
             lstSearchExpr.Items.Add(txtSearchExpr.Text)
             txtSearchExpr.Text = ""
             e.Handled = True
+        End If
+    End Sub
+
+
+    Private Sub lstSearchExpr_DoubleClick(sender As Object, e As EventArgs) Handles lstSearchExpr.DoubleClick
+        If lstSearchExpr.SelectedItem IsNot Nothing Then
+            txtSearchExpr.Text = lstSearchExpr.Text
         End If
     End Sub
 
@@ -198,7 +208,7 @@
                     i(0).mkhi.mi.time = 0
                     i(0).mkhi.mi.dwExtraInfo = IntPtr.Zero
                     SendInput(1, i(0), System.Runtime.InteropServices.Marshal.SizeOf(i(0)))
-                    UpdateIcon(True)
+                    UpdateIcon(True, p.MainWindowTitle)
                     Exit Sub
                 End If
             Next
@@ -212,15 +222,12 @@
         If e.CloseReason = CloseReason.UserClosing Then
             e.Cancel = True
             Me.WindowState = FormWindowState.Minimized
-            NotifyIcon1.Visible = True
-            Me.ShowInTaskbar = False
         End If
     End Sub
 
     Private Sub NotifyIcon1_MouseDoubleClick(sender As Object, e As MouseEventArgs) Handles NotifyIcon1.MouseDoubleClick
         Me.ShowInTaskbar = True
         Me.WindowState = FormWindowState.Normal
-        NotifyIcon1.Visible = False
         ProcessesTimer.Start()
     End Sub
 
@@ -228,7 +235,7 @@
         For Each p As System.Diagnostics.Process In Process.GetProcesses
             For Each pattern As String In lstSearchExpr.Items
                 If TextMatch(p.MainWindowTitle, pattern) Then
-                    UpdateIcon(True)
+                    UpdateIcon(True, p.MainWindowTitle)
                     Exit Sub
                 End If
             Next
@@ -236,11 +243,13 @@
         UpdateIcon(False)
     End Sub
 
-    Sub UpdateIcon(full As Boolean)
+    Sub UpdateIcon(full As Boolean, Optional reason As String = "")
         If full Then
             NotifyIcon1.Icon = My.Resources.coffee_full
+            NotifyIcon1.Text = Me.Text + " - Awake for: " + reason
         Else
             NotifyIcon1.Icon = My.Resources.coffee_empty
+            NotifyIcon1.Text = Me.Text + " - Disabled"
         End If
     End Sub
 #End Region
@@ -250,6 +259,15 @@
     End Sub
 
     Private Sub NoDozeOptions_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        Me.WindowState = FormWindowState.Minimized
         LoadConfig()
+    End Sub
+
+    Private Sub NoDozeOptions_SizeChanged(sender As Object, e As EventArgs) Handles MyBase.SizeChanged
+        If Me.WindowState = FormWindowState.Minimized Then
+            Me.ShowInTaskbar = False
+        Else
+            Me.ShowInTaskbar = True
+        End If
     End Sub
 End Class
