@@ -123,13 +123,13 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\coffee-full.ico" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="coffee-full.ico" />
   </ItemGroup>
   <ItemGroup>
     <None Include="coffee-empty.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Resources\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
